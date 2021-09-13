@@ -51,6 +51,10 @@ kubectl edit pod redis
 #delete a pod
 kubectl delete pod webapp
 
+#replicaset ensures that desired number of PODs always run
+kubectl get replicaset 
+kubectl describe replicaset
+
 #Different status of PODS
 <UPDATE ME>
 
@@ -68,50 +72,3 @@ Events:
   Warning  Failed     3m3s (x3 over 3m44s)   kubelet            Error: ErrImagePull
   Normal   BackOff    2m36s (x5 over 3m44s)  kubelet            Back-off pulling image "agentx"
   Warning  Failed     2m36s (x5 over 3m44s)  kubelet            Error: ImagePullBackOff
-
-
-  REPLICASET
-  #replicaset ensures that desired number of PODs always run
-kubectl get replicaset 
-kubectl describe replicaset
-
-#REPLICATION CONTROLLER (OLD)
-
-apiVersion: v1
-kind: ReplicationController
-metadata:
-  name:
-  labels:
-spec:
-  template:
-    metadata:
-    spec:
-  replicas:
-
-#Create Replication Controller
-kubectl create -f rc-definition.yml
-kubectl get replicationcontroller
-kubectl get pods
-
-#REPLICA SET (NEW)
-
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name:
-  labels:
-spec:
-  template:
-    metadata:
-    spec:
-  replicas:
-  selector:
-    matchLabels:
-      type:
-
-#Create ReplicaSet
-kubectl create -f replicaset.yml
-kubectl get replicaset
-kubectl get pods
-
-##Labels and Selectors
