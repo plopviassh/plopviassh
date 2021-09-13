@@ -1,0 +1,117 @@
+
+##HOW TO DEPLOY PODS
+# deploys a docker container with nginx (application image); pulls image from a public/private hub
+kubectl run nginx --image nginx
+#auto create a pode def yaml wow
+kubectl run redis --image=redis123 --dry-run=client -o yaml > pod.yaml
+
+# shows the list of pods -- name | ready | status | restarts | age
+kubectl get pods
+kubectl get pods -o wide
+
+##PODS WITH YAML
+#4 required fields!!!
+apiVersion:
+kind:
+metadata:
+spec:
+
+#Kind
+- POD
+- Service
+- Replica Set
+- Deployment
+
+#Sample
+(filename) pod-definition.yml
+apiVersion: v1
+kind: Pod
+metadata:  #dictionary are key-value pairs
+    name: my-app-pod
+    labels: #dictionary are key-value pairs
+        app: myapp
+        type: front-end
+
+
+spec:
+    containers: #List/Array
+        - name: nginx-container # - means first in the list
+          image: nginx
+
+#to create a pod
+kubectl create -f pod-definition.yml
+kubectl apply -f pod.yaml
+
+#to get more details about a pod
+kubectl describe pod name-of-pod
+
+#to update the yaml file
+kubectl edit pod redis
+
+#delete a pod
+kubectl delete pod webapp
+
+#Different status of PODS
+<UPDATE ME>
+
+
+check on docker hub
+root@controlplane:~# kubectl describe pod webapp | grep Events -A 10
+Events:
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+  Normal   Scheduled  3m50s                  default-scheduler  Successfully assigned default/webapp to controlplane
+  Normal   Pulling    3m47s                  kubelet            Pulling image "nginx"
+  Normal   Pulled     3m47s                  kubelet            Successfully pulled image "nginx" in 193.28445ms
+  Normal   Created    3m46s                  kubelet            Created container nginx
+  Normal   Started    3m45s                  kubelet            Started container nginx
+  Warning  Failed     3m3s (x3 over 3m44s)   kubelet            Error: ErrImagePull
+  Normal   BackOff    2m36s (x5 over 3m44s)  kubelet            Back-off pulling image "agentx"
+  Warning  Failed     2m36s (x5 over 3m44s)  kubelet            Error: ImagePullBackOff
+
+
+  REPLICASET
+  #replicaset ensures that desired number of PODs always run
+kubectl get replicaset 
+kubectl describe replicaset
+
+#REPLICATION CONTROLLER (OLD)
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name:
+  labels:
+spec:
+  template:
+    metadata:
+    spec:
+  replicas:
+
+#Create Replication Controller
+kubectl create -f rc-definition.yml
+kubectl get replicationcontroller
+kubectl get pods
+
+#REPLICA SET (NEW)
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name:
+  labels:
+spec:
+  template:
+    metadata:
+    spec:
+  replicas:
+  selector:
+    matchLabels:
+      type:
+
+#Create ReplicaSet
+kubectl create -f replicaset.yml
+kubectl get replicaset
+kubectl get pods
+
+##Labels and Selectors
